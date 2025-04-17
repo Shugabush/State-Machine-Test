@@ -1,36 +1,35 @@
 using UnityEngine;
 
-public class EnemyAttackState : State<Enemy>
+[CreateAssetMenu(fileName = "Attack-Straight Single Projectile", menuName = "Enemy Logic/Attack Logic/Straight Single Projectile")]
+public class EnemyAttackSingleStraightProjectile : EnemyAttackSOBase
 {
     [SerializeField] Timer shotTimer = new Timer(2f);
     [SerializeField] Timer exitTimer = new Timer(3f);
 
     [SerializeField] float bulletSpeed = 10f;
 
-    public EnemyAttackState(Enemy entity, StateMachine<Enemy> stateMachine) : base(entity, stateMachine) { }
-
-    public override void EnterState()
+    public override void DoEnterLogic()
     {
-        base.EnterState();
+        base.DoEnterLogic();
     }
 
-    public override void ExitState()
+    public override void DoExitLogic()
     {
-        base.ExitState();
+        base.DoExitLogic();
         shotTimer.Reset();
         exitTimer.Reset();
     }
 
-    public override void FrameUpdate()
+    public override void DoFrameUpdateLogic()
     {
-        base.FrameUpdate();
+        base.DoFrameUpdateLogic();
 
         if (!entity.IsWithinStrikingDistance)
         {
             exitTimer.Update(Time.deltaTime);
             if (exitTimer.Laps >= 1)
             {
-                stateMachine.ChangeState(entity.ChaseState);
+                entity.StateMachine.ChangeState(entity.ChaseState);
             }
             return;
         }
@@ -50,8 +49,18 @@ public class EnemyAttackState : State<Enemy>
         }
     }
 
-    public override void PhysicsUpdate()
+    public override void DoPhysicsLogic()
     {
-        base.PhysicsUpdate();
+        base.DoPhysicsLogic();
+    }
+
+    public override void Initialize(Enemy entity)
+    {
+        base.Initialize(entity);
+    }
+
+    public override void ResetValues()
+    {
+        base.ResetValues();
     }
 }

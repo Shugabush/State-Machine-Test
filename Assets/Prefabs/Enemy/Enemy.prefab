@@ -153,8 +153,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <BulletPrefab>k__BackingField: {fileID: 9201040132479595377, guid: 2351a90cd4a563945acdd5e8bd913f9e, type: 3}
   playerTarget: {fileID: 0}
-  randomMovementRange: 5
-  randomMovementSpeed: 2
+  enemyIdleBase: {fileID: 11400000, guid: 1f5ee92466240b9459baae6520887a72, type: 2}
+  enemyChaseBase: {fileID: 11400000, guid: 78fc753126a960848af5b9f5b774bf0f, type: 2}
+  enemyAttackBase: {fileID: 11400000, guid: c63ee4b92363a8b4e8c886fb05b00ad7, type: 2}
 --- !u!1 &7619933781507292233
 GameObject:
   m_ObjectHideFlags: 0

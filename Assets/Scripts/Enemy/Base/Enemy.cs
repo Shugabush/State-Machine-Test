@@ -13,28 +13,37 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
     #region State Machine Variables
 
     public StateMachine<Enemy> StateMachine { get; set; }
-    public EnemyIdleState IdleState { get; set; }
-    public EnemyChaseState ChaseState { get; set; }
-    public EnemyAttackState AttackState { get; set; }
+    public State<Enemy> IdleState { get; set; }
+    public State<Enemy> ChaseState { get; set; }
+    public State<Enemy> AttackState { get; set; }
     public bool IsAggroed { get; set; }
     public bool IsWithinStrikingDistance { get; set; }
 
     #endregion
 
-    #region Idle Variables
+    #region ScriptableObject Variables
 
-    public float randomMovementRange = 1f;
-    public float randomMovementSpeed = 1f;
+    [SerializeField] EnemyIdleSOBase enemyIdleBase;
+    [SerializeField] EnemyChaseSOBase enemyChaseBase;
+    [SerializeField] EnemyAttackSOBase enemyAttackBase;
+
+    public EnemyIdleSOBase EnemyIdleBaseInstance { get; private set; }
+    public EnemyChaseSOBase EnemyChaseBaseInstance { get; private set; }
+    public EnemyAttackSOBase EnemyAttackBaseInstance { get; private set; }
 
     #endregion
 
     void Awake()
     {
+        EnemyIdleBaseInstance = Instantiate(enemyIdleBase);
+        EnemyChaseBaseInstance = Instantiate(enemyChaseBase);
+        EnemyAttackBaseInstance = Instantiate(enemyAttackBase);
+
         StateMachine = new StateMachine<Enemy>();
 
-        IdleState = new EnemyIdleState(this, StateMachine);
-        ChaseState = new EnemyChaseState(this, StateMachine);
-        AttackState = new EnemyAttackState(this, StateMachine);
+        IdleState = new State<Enemy>(this, StateMachine, EnemyIdleBaseInstance);
+        ChaseState = new State<Enemy>(this, StateMachine, EnemyChaseBaseInstance);
+        AttackState = new State<Enemy>(this, StateMachine, EnemyAttackBaseInstance);
 
         playerTarget = GameObject.FindWithTag("Player").transform;
     }
@@ -45,6 +54,10 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
         RB = GetComponent<Rigidbody>();
 
         StateMachine.Initialize(IdleState);
+
+        EnemyIdleBaseInstance.Initialize(this);
+        EnemyChaseBaseInstance.Initialize(this);
+        EnemyAttackBaseInstance.Initialize(this);
     }
 
     void Update()
