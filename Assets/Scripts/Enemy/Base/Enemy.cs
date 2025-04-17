@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
     public float CurrentHealth { get; set; }
     public Rigidbody RB { get; set; }
     [field: SerializeField]
-    public Rigidbody BulletPrefab { get; private set; }
+    public Bullet BulletPrefab { get; private set; }
 
     public Transform playerTarget;
 

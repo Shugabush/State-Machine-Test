@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66a219bdfa0c7e841ad7f6fd83fde20b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <BulletPrefab>k__BackingField: {fileID: 9201040132479595377, guid: 2351a90cd4a563945acdd5e8bd913f9e, type: 3}
   playerTarget: {fileID: 0}
   randomMovementRange: 5
   randomMovementSpeed: 2

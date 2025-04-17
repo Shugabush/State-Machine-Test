@@ -45,8 +45,8 @@ public class EnemyAttackState : State<Enemy>
             shotTimer.Reset();
 
             Vector3 dir = (entity.playerTarget.position - entity.transform.position).normalized;
-            Rigidbody bullet = Object.Instantiate(entity.BulletPrefab, entity.transform.position, Quaternion.identity);
-            bullet.linearVelocity = dir * bulletSpeed;
+            Bullet bullet = Object.Instantiate(entity.BulletPrefab, entity.transform.position, Quaternion.identity);
+            bullet.Fire(dir * bulletSpeed);
         }
     }
 
