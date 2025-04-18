@@ -17,7 +17,11 @@ public class Player : MonoBehaviour, IDamagable, IMovable
 
     void Update()
     {
-        Vector3 movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical")).normalized;
+        Vector3 movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+        if (movement != Vector3.zero)
+        {
+            movement.Normalize();
+        }
         Move(movement * movementSpeed);
     }
 
@@ -38,6 +42,10 @@ public class Player : MonoBehaviour, IDamagable, IMovable
     #endregion
 
     #region Movement / Rotation Functions
+    public void MoveWithInput()
+    {
+
+    }
     public void Move(Vector3 velocity)
     {
         RB.linearVelocity = velocity;
