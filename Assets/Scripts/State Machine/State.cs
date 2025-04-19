@@ -3,14 +3,12 @@ using UnityEngine;
 public class State<TEntity> where TEntity : MonoBehaviour
 {
     protected TEntity entity;
-    protected StateMachine<TEntity> stateMachine;
 
-    protected StateSOBase<Enemy> stateSO;
+    protected StateSOBase<TEntity> stateSO;
 
-    public State(TEntity entity, StateMachine<TEntity> stateMachine, StateSOBase<Enemy> stateSO)
+    public State(TEntity entity, StateSOBase<TEntity> stateSO)
     {
         this.entity = entity;
-        this.stateMachine = stateMachine;
         this.stateSO = stateSO;
     }
 

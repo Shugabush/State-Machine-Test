@@ -12,10 +12,10 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
 
     #region State Machine Variables
 
-    public StateMachine<Enemy> StateMachine { get; set; }
-    public State<Enemy> IdleState { get; set; }
-    public State<Enemy> ChaseState { get; set; }
-    public State<Enemy> AttackState { get; set; }
+    public StateMachine<Enemy> StateMachine { get; private set; }
+    public State<Enemy> IdleState { get; private set; }
+    public State<Enemy> ChaseState { get; private set; }
+    public State<Enemy> AttackState { get; private set; }
     public bool IsAggroed { get; set; }
     public bool IsWithinStrikingDistance { get; set; }
 
@@ -41,9 +41,9 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
 
         StateMachine = new StateMachine<Enemy>();
 
-        IdleState = new State<Enemy>(this, StateMachine, EnemyIdleBaseInstance);
-        ChaseState = new State<Enemy>(this, StateMachine, EnemyChaseBaseInstance);
-        AttackState = new State<Enemy>(this, StateMachine, EnemyAttackBaseInstance);
+        IdleState = new State<Enemy>(this, EnemyIdleBaseInstance);
+        ChaseState = new State<Enemy>(this, EnemyChaseBaseInstance);
+        AttackState = new State<Enemy>(this, EnemyAttackBaseInstance);
 
         playerTarget = GameObject.FindWithTag("Player").transform;
     }
