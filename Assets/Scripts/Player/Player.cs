@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable
+[RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
+public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable<CapsuleCollider>
 {
     [SerializeField] float movementSpeed = 5f;
     public Vector2 MovementInput { get; private set; }
@@ -17,8 +17,32 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable
 
     #region Physics Variables
 
+    public CapsuleCollider Collider { get; set; }
+    public Vector3 ColliderDirection
+    {
+        get
+        {
+            switch (Collider.direction)
+            {
+                case 0:
+                    return Vector3.right;
+                case 1:
+                    return Vector3.up;
+                case 2:
+                    return Vector3.forward;
+                default:
+                    return Vector3.zero;
+            }
+        }
+    }
     public Rigidbody RB { get; set; }
+    public Vector3 Movement { get; private set; }
+    public Vector3 Velocity { get; private set; }
+
     public bool IsGrounded { get; set; }
+    public float DistanceToGround { get; set; }
+    public Vector3 GroundPlaneNormal { get; set; }
+    public Vector3 Gravity { get; set; }
 
     #endregion
 
@@ -60,11 +84,14 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable
         FallState = new State<Player>(this, PlayerFallBaseInstance);
 
         StateMachine = new StateMachine<Player>();
+
+        Gravity = Physics.gravity;
     }
 
     void Start()
     {
         RB = GetComponent<Rigidbody>();
+        Collider = GetComponent<CapsuleCollider>();
         Anim = GetComponentInChildren<Animator>();
         CurrentHealth = MaxHealth;
 
@@ -78,7 +105,26 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable
 
     void Update()
     {
+        CheckForGround();
+
+        if (IsGrounded)
+        {
+            Velocity = Vector3.zero;
+        }
+        else
+        {
+            Velocity += Gravity * Time.deltaTime;
+        }
+
         MovementInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        if (MovementInput != Vector2.zero)
+        {
+            MovementInput.Normalize();
+        }
+
+        Movement = new Vector3(MovementInput.x, 0f, MovementInput.y);
+
+        Move(Movement);
 
         StateMachine.CurrentState.FrameUpdate();
     }
@@ -105,23 +151,73 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable
     #endregion
 
     #region Movement / Rotation Functions
-    public void MoveWithInput()
+
+    public void Move(Vector3 movement)
     {
-        Vector3 movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
-        if (movement != Vector3.zero)
-        {
-            movement.Normalize();
-        }
-        Move(movement * movementSpeed);
+        RB.linearVelocity = movement + Velocity;
     }
-    public void Move(Vector3 velocity)
-    {
-        RB.linearVelocity = velocity;
-    }
+
     #endregion
+
+    #region Ground Functions
 
     public void CheckForGround()
     {
+        const float maxDstThreshold = 0.05f;
 
+        Vector3 point1 = transform.position + Collider.center + (ColliderDirection * (Collider.height * 0.5f - Collider.radius));
+        Vector3 point2 = transform.position + Collider.center - (ColliderDirection * (Collider.height * 0.5f - Collider.radius));
+
+        // Make this GameObject ignore the raycast
+        var originalLayer = gameObject.layer;
+        gameObject.layer = 2;
+
+        Vector3 rayDir = Gravity.normalized;
+
+        if (Physics.CapsuleCast(point1, point2, Collider.radius, rayDir, out var hit, Mathf.Infinity, ~2))
+        {
+            DistanceToGround = hit.distance;
+
+            if (hit.distance < maxDstThreshold)
+            {
+                IsGrounded = true;
+                GroundPlaneNormal = hit.normal;
+            }
+            else
+            {
+                IsGrounded = false;
+                GroundPlaneNormal = -rayDir;
+            }
+        }
+        else
+        {
+            IsGrounded = false;
+        }
+
+        // Revert this GameObject to its original layer
+        gameObject.layer = originalLayer;
+    }
+
+    #endregion
+
+    public Vector3 ProjectOnGroundPlane(Vector3 direction)
+    {
+        return Vector3.ProjectOnPlane(direction, GroundPlaneNormal);
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+
+        // We need the collider
+        if (Collider == null)
+        {
+            Collider = GetComponent<CapsuleCollider>();
+        }
+
+        Vector3 point1 = transform.position + Collider.center + (ColliderDirection * (Collider.height * 0.5f - Collider.radius));
+        Vector3 point2 = transform.position + Collider.center - (ColliderDirection * (Collider.height * 0.5f - Collider.radius));
+
+        Gizmos.DrawLine(point1, point2);
     }
 }

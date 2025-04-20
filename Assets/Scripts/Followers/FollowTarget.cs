@@ -4,21 +4,26 @@ public class FollowTarget : MonoBehaviour
 {
     public Transform target;
     public Vector3 positionOffset = Vector3.back * 7.5f;
+    public Quaternion positionOffsetRotation = Quaternion.identity;
     public Quaternion rotationOffset = Quaternion.identity;
 
     public bool followPosition = true;
     public bool followRotation = true;
 
-    public bool rotatePositionOffset = false;
+    [Tooltip("Set this to false if you want another script to call SetPositionAndRotation on this follower")]
+    public bool autoTransform = true;
 
     void LateUpdate()
     {
-        SetPositionAndRotation();
+        if (autoTransform)
+        {
+            SetPositionAndRotation();
+        }
     }
 
-    void SetPositionAndRotation()
+    public void SetPositionAndRotation()
     {
-        Vector3 positionOffset = rotatePositionOffset ? rotationOffset * this.positionOffset : this.positionOffset;
+        Vector3 positionOffset = positionOffsetRotation * this.positionOffset;
         if (followPosition)
         {
             transform.position = target.position + positionOffset;

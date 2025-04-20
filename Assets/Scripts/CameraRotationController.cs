@@ -3,9 +3,8 @@ using UnityEngine;
 public class CameraRotationController : MonoBehaviour
 {
     // Assign in the inspector
+    [SerializeField] FollowTarget controllerFollower;
     [SerializeField] FollowTarget cameraFollower;
-
-    Vector3 cameraFollowerStartingPositionOffset;
 
     float pitch = 0f;
     float yaw = 0f;
@@ -19,8 +18,28 @@ public class CameraRotationController : MonoBehaviour
     public static Quaternion YawRotation { get; private set; } = Quaternion.identity;
     public static Quaternion InputRotation { get; private set; } = Quaternion.identity;
 
+    void OnEnable()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    void OnDisable()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    void Awake()
+    {
+        // This script will call SetPositionAndRotation() on the followers
+        controllerFollower.autoTransform = false;
+        cameraFollower.autoTransform = false;
+    }
+
     void OnDestroy()
     {
+        // Reset static properties
         PitchRotation = Quaternion.identity;
         YawRotation = Quaternion.identity;
         InputRotation = Quaternion.identity;
@@ -39,19 +58,12 @@ public class CameraRotationController : MonoBehaviour
 
         transform.rotation = InputRotation;
 
-        cameraFollower.positionOffset = InputRotation * cameraFollowerStartingPositionOffset;
+        cameraFollower.positionOffsetRotation = InputRotation;
     }
 
-    void OnEnable()
+    void LateUpdate()
     {
-        cameraFollowerStartingPositionOffset = cameraFollower.positionOffset;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
-
-    void OnDisable()
-    {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        controllerFollower.SetPositionAndRotation();
+        cameraFollower.SetPositionAndRotation();
     }
 }

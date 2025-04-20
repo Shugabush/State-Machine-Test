@@ -4,5 +4,5 @@ public interface IMovable
 {
     Rigidbody RB { get; set; }
 
-    void Move(Vector3 velocity);
+    void Move(Vector3 movement);
 }

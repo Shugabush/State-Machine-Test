@@ -258,7 +258,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3077186926799127880, guid: 4f2da308198405d4788363059b552f06, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.125
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3077186926799127880, guid: 4f2da308198405d4788363059b552f06, type: 3}
       propertyPath: m_LocalPosition.z
@@ -612,10 +612,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1899310211}
   positionOffset: {x: 0, y: 0, z: -7.5}
+  positionOffsetRotation: {x: 0, y: 0, z: 0, w: 1}
   rotationOffset: {x: 0, y: 0, z: 0, w: 1}
   followPosition: 1
   followRotation: 1
-  rotatePositionOffset: 0
+  autoTransform: 1
 --- !u!1 &1899310210
 GameObject:
   m_ObjectHideFlags: 0
@@ -663,10 +664,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 823504468}
   positionOffset: {x: 0, y: 1, z: 0}
+  positionOffsetRotation: {x: 0, y: 0, z: 0, w: 1}
   rotationOffset: {x: 0, y: 0, z: 0, w: 1}
   followPosition: 1
   followRotation: 0
-  rotatePositionOffset: 0
+  autoTransform: 1
 --- !u!114 &1899310213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -679,6 +681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb2b963cf6799ad46884543da14792dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controllerFollower: {fileID: 1899310212}
   cameraFollower: {fileID: 1891038007}
   pitchLimit: 45
   yawLimit: 180
