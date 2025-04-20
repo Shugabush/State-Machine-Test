@@ -1,14 +1,11 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Player-Standard Move", menuName = "Player Logic/Move/Standard")]
-public class PlayerStandardMove : PlayerMoveSOBase
+[CreateAssetMenu(fileName = "Player-Standard Fall", menuName = "Player Logic/Fall/Standard")]
+public class PlayerStandardFall : PlayerFallSOBase
 {
     public override void DoEnterLogic()
     {
         base.DoEnterLogic();
-        entity.Anim.CrossFade("Walk", 0.125f);
-        var clips = entity.Anim.GetCurrentAnimatorClipInfo(0);
-        Debug.Log(clips.Length);
     }
 
     public override void DoExitLogic()
@@ -19,7 +16,6 @@ public class PlayerStandardMove : PlayerMoveSOBase
     public override void DoFrameUpdateLogic()
     {
         base.DoFrameUpdateLogic();
-        entity.MoveWithInput();
     }
 
     public override void DoPhysicsLogic()

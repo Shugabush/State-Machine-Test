@@ -54,12 +54,12 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable
         PlayerJumpBaseInstance = Instantiate(playerJumpBase);
         PlayerFallBaseInstance = Instantiate(playerFallBase);
 
-        StateMachine = new StateMachine<Player>();
-
         IdleState = new State<Player>(this, PlayerIdleBaseInstance);
         MoveState = new State<Player>(this, PlayerMoveBaseInstance);
         JumpState = new State<Player>(this, PlayerJumpBaseInstance);
         FallState = new State<Player>(this, PlayerFallBaseInstance);
+
+        StateMachine = new StateMachine<Player>();
     }
 
     void Start()
@@ -68,12 +68,12 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable
         Anim = GetComponentInChildren<Animator>();
         CurrentHealth = MaxHealth;
 
-        StateMachine.Initialize(IdleState);
-
         PlayerIdleBaseInstance.Initialize(this);
         PlayerMoveBaseInstance.Initialize(this);
         PlayerJumpBaseInstance.Initialize(this);
         PlayerFallBaseInstance.Initialize(this);
+
+        StateMachine.Initialize(IdleState);
     }
 
     void Update()

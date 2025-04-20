@@ -39,11 +39,11 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
         EnemyChaseBaseInstance = Instantiate(enemyChaseBase);
         EnemyAttackBaseInstance = Instantiate(enemyAttackBase);
 
-        StateMachine = new StateMachine<Enemy>();
-
         IdleState = new State<Enemy>(this, EnemyIdleBaseInstance);
         ChaseState = new State<Enemy>(this, EnemyChaseBaseInstance);
         AttackState = new State<Enemy>(this, EnemyAttackBaseInstance);
+
+        StateMachine = new StateMachine<Enemy>();
 
         playerTarget = GameObject.FindWithTag("Player").transform;
     }
@@ -53,11 +53,11 @@ public class Enemy : MonoBehaviour, IDamagable, IMovable
         CurrentHealth = MaxHealth;
         RB = GetComponent<Rigidbody>();
 
-        StateMachine.Initialize(IdleState);
-
         EnemyIdleBaseInstance.Initialize(this);
         EnemyChaseBaseInstance.Initialize(this);
         EnemyAttackBaseInstance.Initialize(this);
+
+        StateMachine.Initialize(IdleState);
     }
 
     void Update()

@@ -18,9 +18,10 @@ public class FollowTarget : MonoBehaviour
 
     void SetPositionAndRotation()
     {
+        Vector3 positionOffset = rotatePositionOffset ? rotationOffset * this.positionOffset : this.positionOffset;
         if (followPosition)
         {
-            transform.position = target.position + (rotatePositionOffset ? rotationOffset * positionOffset : positionOffset);
+            transform.position = target.position + positionOffset;
         }
         if (followRotation)
         {

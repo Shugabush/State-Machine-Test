@@ -147,5 +147,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 5
   playerIdleBase: {fileID: 11400000, guid: 9cb2c78278c1dbc47ba0cf214b2f1096, type: 2}
-  playerMoveBase: {fileID: 0}
-  playerJumpBase: {fileID: 0}
+  playerMoveBase: {fileID: 11400000, guid: 4e7f49a547953a44da1c5dcbcb78c8ad, type: 2}
+  playerJumpBase: {fileID: 11400000, guid: 16e24fbb0290efd4abcf45d46b229ac5, type: 2}
+  playerFallBase: {fileID: 11400000, guid: 1e00c63a7c57ac0469f2b7b1be998765, type: 2}

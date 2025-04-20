@@ -17,11 +17,17 @@ public class PlayerStandardIdle : PlayerIdleSOBase
 
     public override void DoFrameUpdateLogic()
     {
-        base.DoFrameUpdateLogic();
         if (entity.MovementInput != Vector2.zero)
         {
-            
+            entity.StateMachine.ChangeState(entity.MoveState);
+            return;
         }
+        if (!entity.IsGrounded)
+        {
+            entity.StateMachine.ChangeState(entity.FallState);
+            return;
+        }
+        base.DoFrameUpdateLogic();
     }
 
     public override void DoPhysicsLogic()

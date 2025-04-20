@@ -615,7 +615,7 @@ MonoBehaviour:
   rotationOffset: {x: 0, y: 0, z: 0, w: 1}
   followPosition: 1
   followRotation: 1
-  rotatePositionOffset: 1
+  rotatePositionOffset: 0
 --- !u!1 &1899310210
 GameObject:
   m_ObjectHideFlags: 0
@@ -679,6 +679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb2b963cf6799ad46884543da14792dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraFollower: {fileID: 1891038007}
   pitchLimit: 45
   yawLimit: 180
 --- !u!1001 &5400918378049755592

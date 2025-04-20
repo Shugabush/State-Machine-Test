@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class CameraRotationController : MonoBehaviour
 {
+    // Assign in the inspector
+    [SerializeField] FollowTarget cameraFollower;
+
+    Vector3 cameraFollowerStartingPositionOffset;
+
     float pitch = 0f;
     float yaw = 0f;
 
@@ -33,10 +38,13 @@ public class CameraRotationController : MonoBehaviour
         InputRotation = YawRotation * PitchRotation;
 
         transform.rotation = InputRotation;
+
+        cameraFollower.positionOffset = InputRotation * cameraFollowerStartingPositionOffset;
     }
 
     void OnEnable()
     {
+        cameraFollowerStartingPositionOffset = cameraFollower.positionOffset;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
