@@ -5,6 +5,8 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable<CapsuleCo
 {
     [SerializeField] float movementSpeed = 5f;
     public Vector2 MovementInput { get; private set; }
+    [SerializeField] float rotationSpeed = 15f;
+    public Quaternion TargetRotation { get; private set; }
 
     public Animator Anim { get; private set; }
 
@@ -86,6 +88,8 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable<CapsuleCo
         StateMachine = new StateMachine<Player>();
 
         Gravity = Physics.gravity;
+
+        TargetRotation = transform.rotation;
     }
 
     void Start()
@@ -122,11 +126,15 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable<CapsuleCo
             MovementInput.Normalize();
         }
 
-        Movement = new Vector3(MovementInput.x, 0f, MovementInput.y);
+        Movement = CameraRotationController.YawRotation * new Vector3(MovementInput.x, 0f, MovementInput.y);
 
-        Move(Movement);
+        Move(Movement * movementSpeed);
+
+        Rotate(Movement);
 
         StateMachine.CurrentState.FrameUpdate();
+
+        RB.rotation = Quaternion.Lerp(RB.rotation, TargetRotation, rotationSpeed * Time.deltaTime);
     }
 
     void FixedUpdate()
@@ -155,6 +163,14 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable<CapsuleCo
     public void Move(Vector3 movement)
     {
         RB.linearVelocity = movement + Velocity;
+    }
+
+    public void Rotate(Vector3 direction)
+    {
+        if (direction != Vector3.zero)
+        {
+            TargetRotation = Quaternion.LookRotation(direction, -Gravity);
+        }
     }
 
     #endregion
