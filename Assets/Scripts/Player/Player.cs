@@ -134,7 +134,10 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable<CapsuleCo
 
         StateMachine.CurrentState.FrameUpdate();
 
-        RB.rotation = Quaternion.Lerp(RB.rotation, TargetRotation, rotationSpeed * Time.deltaTime);
+        if (MovementInput != Vector2.zero)
+        {
+            RB.rotation = Quaternion.Lerp(RB.rotation, TargetRotation, rotationSpeed * Time.deltaTime);
+        }
     }
 
     void FixedUpdate()
