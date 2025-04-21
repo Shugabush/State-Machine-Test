@@ -6,6 +6,7 @@ public class PlayerStandardFall : PlayerFallSOBase
     public override void DoEnterLogic()
     {
         base.DoEnterLogic();
+        entity.Anim.CrossFade("Fall", 0.05f);
     }
 
     public override void DoExitLogic()
@@ -16,6 +17,10 @@ public class PlayerStandardFall : PlayerFallSOBase
     public override void DoFrameUpdateLogic()
     {
         base.DoFrameUpdateLogic();
+        if (entity.IsGrounded)
+        {
+            entity.StateMachine.ChangeState(entity.MovementInput == Vector2.zero ? entity.IdleState : entity.MoveState);
+        }
     }
 
     public override void DoPhysicsLogic()

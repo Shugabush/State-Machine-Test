@@ -7,7 +7,6 @@ public class PlayerStandardIdle : PlayerIdleSOBase
     {
         base.DoEnterLogic();
         entity.Anim.CrossFade("Idle", 0.05f);
-        var clips = entity.Anim.GetCurrentAnimatorClipInfo(0);
     }
 
     public override void DoExitLogic()
@@ -22,11 +21,11 @@ public class PlayerStandardIdle : PlayerIdleSOBase
             entity.StateMachine.ChangeState(entity.MoveState);
             return;
         }
-        //if (!entity.IsGrounded)
-        //{
-        //    entity.StateMachine.ChangeState(entity.FallState);
-        //    return;
-        //}
+        if (!entity.IsGrounded)
+        {
+            entity.StateMachine.ChangeState(entity.FallState);
+            return;
+        }
         base.DoFrameUpdateLogic();
     }
 
