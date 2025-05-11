@@ -111,13 +111,11 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable<CapsuleCo
     {
         CheckForGround();
 
-        if (IsGrounded)
+        Velocity += Gravity * Time.deltaTime;
+
+        if (IsGrounded && Velocity.y < -DistanceToGround)
         {
-            Velocity = Vector3.zero;
-        }
-        else
-        {
-            Velocity += Gravity * Time.deltaTime;
+            Velocity = Vector3.down * DistanceToGround;
         }
 
         MovementInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -134,10 +132,7 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable<CapsuleCo
 
         StateMachine.CurrentState.FrameUpdate();
 
-        if (MovementInput != Vector2.zero)
-        {
-            RB.rotation = Quaternion.Lerp(RB.rotation, TargetRotation, rotationSpeed * Time.deltaTime);
-        }
+        RB.rotation = Quaternion.Lerp(RB.rotation, TargetRotation, rotationSpeed * Time.deltaTime);
     }
 
     void FixedUpdate()
@@ -165,6 +160,7 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable<CapsuleCo
 
     public void Move(Vector3 movement)
     {
+        movement = ProjectOnGroundPlane(movement);
         RB.linearVelocity = movement + Velocity;
     }
 
@@ -187,30 +183,29 @@ public class Player : MonoBehaviour, IDamagable, IMovable, IGroundable<CapsuleCo
         Vector3 point1 = transform.position + Collider.center + (ColliderDirection * (Collider.height * 0.5f - Collider.radius));
         Vector3 point2 = transform.position + Collider.center - (ColliderDirection * (Collider.height * 0.5f - Collider.radius));
 
+
         // Make this GameObject ignore the raycast
         var originalLayer = gameObject.layer;
         gameObject.layer = 2;
 
         Vector3 rayDir = Gravity.normalized;
 
+        // If the capsule cast starts right on the ground, it may clip through it
+        // So offset the points in the opposite direction of ray a tiny bit
+        point1 -= rayDir * 0.01f;
+        point2 -= rayDir * 0.01f;
+
         if (Physics.CapsuleCast(point1, point2, Collider.radius, rayDir, out var hit, Mathf.Infinity, ~2))
         {
+            IsGrounded = hit.distance < maxDstThreshold;
+            GroundPlaneNormal = hit.normal;
             DistanceToGround = hit.distance;
-
-            if (hit.distance < maxDstThreshold)
-            {
-                IsGrounded = true;
-                GroundPlaneNormal = hit.normal;
-            }
-            else
-            {
-                IsGrounded = false;
-                GroundPlaneNormal = -rayDir;
-            }
         }
         else
         {
             IsGrounded = false;
+            GroundPlaneNormal = -rayDir;
+            DistanceToGround = Mathf.Infinity;
         }
 
         // Revert this GameObject to its original layer

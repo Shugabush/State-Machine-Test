@@ -16,6 +16,12 @@ public class PlayerStandardMove : PlayerMoveSOBase
 
     public override void DoFrameUpdateLogic()
     {
+        if (!entity.IsGrounded)
+        {
+            entity.StateMachine.ChangeState(entity.FallState);
+            return;
+        }
+
         if (entity.MovementInput == Vector2.zero)
         {
             entity.StateMachine.ChangeState(entity.IdleState);
